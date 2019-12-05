@@ -12,6 +12,14 @@ class ExtendedNode(Node):
             return tree_list
         return [self.label]
 
+    def get_extended_list(self):
+        extended_list = []
+        if len(self.get_children(self)) > 0:
+            for c in self.get_children(self):
+                extended_list.append(c.get_extended_list())
+            return {'l': self.label, 'sub': extended_list}
+        return {'l': self.label}
+
     def number_of_leaves(self):
         return len(self.list_of_leaves())
 
