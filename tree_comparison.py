@@ -6,6 +6,7 @@ from pulp import *
 from matplotlib import pyplot as plt
 from copy import deepcopy
 
+import gurobiby as grb
 import catalan_numbers
 import random
 import time
@@ -193,7 +194,51 @@ def createLPproblem(tree_one, tree_two, k):
         lp += lpSum([x[i][j] for i in c1]) <= 1, ""
     for k in I:
         lp += lpSum([x[str(k[0])][str(k[1])], x[str(k[2])][str(k[3])]]) <= 1, ""
+
     
+    return lp
+
+def createGRBproblem(tree_one, tree_two, k):
+    clusters_one = tree_one.get_clusters(1)
+    clusters_two = tree_two.get_clusters(1)
+    c = compute_cost_function(clusters_one, clusters_two, k)
+    c1 = []
+    for i in range(0,len(clusters_one)):
+        c1.append(str(i))
+    c2 = []
+    for i in range(0,len(clusters_two)):
+        c2.append(str(i))
+
+    #Initialize Gurobi Problem
+    lp = grb.Model("Tree Comparison general RF distance", -1)
+    x =  {(i,j):lp.addVar(vtype=grb.GRB.BINARY,
+                            name="x_{0}_{1}".format(i,j)) for i in c1 for j in c2}
+
+    #Objective function
+    objective = grb.quicksum([x[i,j] * c.get((i,j)) for i in c1 for j in c2])
+    lp.ModelSense = grb.GRB.MINIMIZE
+    lp.setObjective(objective)
+
+    # Constraints
+    I = compute_invalid_edges(clusters_one, clusters_two)
+    for i in c1:
+        lp.addConstr(
+                lhs=grb.quicksum(x[i,j] for j in c2),
+                sense=grb.GRB.LESS_EQUAL,
+                rhs=1,
+                name="")
+    for j in c2:
+        lp.addConstr(
+                lhs=grb.quicksum(x[i,j] for i in c1),
+                sense=grb.GRB.LESS_EQUAL,
+                rhs=1,
+                name="")
+    for k in I:
+        lp.addConstr(
+                lhs=grb.quicksum(x[str(k[0]), str(k[1])], x[str(k[2]), str(k[3])]),
+                sense=grb.GRB.LESS_EQUAL,
+                rhs=1,
+                name="")
     return lp
 
 def adapt_tree_one(tree_one, tree_two):
@@ -256,6 +301,17 @@ def compare_trees(tree_size, number_of_trees):
                         end = time.time()
                         tree_list[i]['GRF' + str(k)] = {"cost": value(lp.objective), "time": end - start,
                         "time_creation": time_creation}
+
+                key = 'GRB' + str(k)
+                if (key not in tree_list[i] and tree_size <= 16):
+                    start = time.time()
+                    print( "k is " + str(k))
+                    lp = createGRBproblem(tree_one, tree_two, k)
+                    time_creation = time.time() - start
+                    lp.optimize()
+                    end = time.time()
+                    tree_list[i]['GRF' + str(k)] = {"cost": value(lp.objVal), "time": end - start,
+                    "time_creation": time_creation}
             for k in [0,0.5,1]:
                 key = "ZSS_" + str(k)
                 if (key not in tree_list[i]):
