@@ -1,1 +1,0 @@
-[{"one": [[1], [2]], "two": [[2], [1]], "GRF1": null, "GRF2": null, "GRF4": null, "GRF16": null, "GRF128": null, "ZSS": 2.0}, {"one": [[2], [1]], "two": [[1], [2]], "GRF1": null, "GRF2": null, "GRF4": null, "GRF16": null, "GRF128": null, "ZSS": 2.0}]
