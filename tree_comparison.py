@@ -6,7 +6,7 @@ from pulp import *
 from matplotlib import pyplot as plt
 from copy import deepcopy
 
-import gurobiby as grb
+import gurobipy as grb
 import catalan_numbers
 import random
 import time
@@ -501,7 +501,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             plt.close()
 
 def create_time_graph():
-    k_array = [2,3,4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
+    k_array = [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
     ar_zss_0 = []
     ar_zss_0_a = []
     ar_zss_0_5 = []
@@ -605,7 +605,7 @@ def create_time_graph():
 
 
 def compute_results():
-    k_array = [2,3,4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
+    k_array = [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
     ar_zss_0 = {"time": [], "cost": [], "max": [], "min": []}
     ar_zss_0_a = {"time": [], "cost": [], "max": [], "min": []}
     ar_zss_0_5 = {"time": [], "cost": [], "max": [], "min": []}
@@ -760,7 +760,7 @@ def compute_results():
         json.dump(result_data, outfile)
 
 if __name__ == "__main__":
-    for tree_size in [2,3,4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]:
+    for tree_size in [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]:
         number_of_trees = 64
         compare_trees(tree_size, number_of_trees)
         create_graph(tree_size, number_of_trees, "zss")
