@@ -6,7 +6,6 @@ from pulp import *
 from matplotlib import pyplot as plt
 from copy import deepcopy
 
-import gurobipy as grb
 import catalan_numbers
 import random
 import time
@@ -198,49 +197,6 @@ def createLPproblem(tree_one, tree_two, k):
     
     return lp
 
-def createGRBproblem(tree_one, tree_two, k):
-    clusters_one = tree_one.get_clusters(1)
-    clusters_two = tree_two.get_clusters(1)
-    c = compute_cost_function(clusters_one, clusters_two, k)
-    c1 = []
-    for i in range(0,len(clusters_one)):
-        c1.append(str(i))
-    c2 = []
-    for i in range(0,len(clusters_two)):
-        c2.append(str(i))
-
-    #Initialize Gurobi Problem
-    lp = grb.Model("Tree Comparison general RF distance", -1)
-    x =  {(i,j):lp.addVar(vtype=grb.GRB.BINARY,
-                            name="x_{0}_{1}".format(i,j)) for i in c1 for j in c2}
-
-    #Objective function
-    objective = grb.quicksum([x[i,j] * c.get((i,j)) for i in c1 for j in c2])
-    lp.ModelSense = grb.GRB.MINIMIZE
-    lp.setObjective(objective)
-
-    # Constraints
-    I = compute_invalid_edges(clusters_one, clusters_two)
-    for i in c1:
-        lp.addConstr(
-                lhs=grb.quicksum(x[i,j] for j in c2),
-                sense=grb.GRB.LESS_EQUAL,
-                rhs=1,
-                name="")
-    for j in c2:
-        lp.addConstr(
-                lhs=grb.quicksum(x[i,j] for i in c1),
-                sense=grb.GRB.LESS_EQUAL,
-                rhs=1,
-                name="")
-    for k in I:
-        lp.addConstr(
-                lhs=grb.quicksum(x[str(k[0]), str(k[1])], x[str(k[2]), str(k[3])]),
-                sense=grb.GRB.LESS_EQUAL,
-                rhs=1,
-                name="")
-    return lp
-
 def adapt_tree_one(tree_one, tree_two):
     stack = list()
     one_copy = deepcopy(tree_one)
@@ -282,14 +238,10 @@ def compare_trees(tree_size, number_of_trees):
                 + ") (" + str(j) + "/" + str(number_of_trees) + ") tree size: " + str(tree_size))
             tree_one = create_binary_tree_from_list(tree_list[i]['one'])
             tree_two = create_binary_tree_from_list(tree_list[i]['two'])
-            if ('one_adapted' not in tree_list[i]):
-                tree_one_adapted = adapt_tree_one(tree_one, tree_two)
-                tree_list[i]['one_adapted'] = tree_one_adapted.get_tree_list(tree_one_adapted)
-            tree_one_adapted = create_binary_tree_from_list(tree_list[i]['one_adapted'])
             if ('#GRFRestr' not in tree_list[i] and tree_size <= 32):
                 I = compute_invalid_edges(tree_one.get_clusters(1), tree_two.get_clusters(1))
                 tree_list[i]['#GRFRestr'] = len(I)
-            for k in [1,64]:
+            for k in [1]:
                 key = 'GRF' + str(k)
                 if (key not in tree_list[i] and tree_size <= 16):
                     start = time.time()
@@ -301,18 +253,7 @@ def compare_trees(tree_size, number_of_trees):
                         end = time.time()
                         tree_list[i]['GRF' + str(k)] = {"cost": value(lp.objective), "time": end - start,
                         "time_creation": time_creation}
-
-                key = 'GRB' + str(k)
-                if (key not in tree_list[i] and tree_size <= 16):
-                    start = time.time()
-                    print( "k is " + str(k))
-                    lp = createGRBproblem(tree_one, tree_two, k)
-                    time_creation = time.time() - start
-                    lp.optimize()
-                    end = time.time()
-                    tree_list[i]['GRF' + str(k)] = {"cost": value(lp.objVal), "time": end - start,
-                    "time_creation": time_creation}
-            for k in [0,0.5,1]:
+            for k in [0.5]:
                 key = "ZSS_" + str(k)
                 if (key not in tree_list[i]):
                     start = time.time()
@@ -499,6 +440,44 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             plt.legend()
             plt.savefig('plots/zss1_sorted_' + tree_size.__str__() + '.png')
             plt.close()
+        elif graph_type == 'low_grf_high_ted':
+            zss_0_5 = [-1 for _ in range(number_of_trees)]
+            grf_1 = [-1 for _ in range(number_of_trees)]
+            for i in range(0, len(tree_list)):
+                    key = 'GRF' + str(k)
+                if ('GRF1' in tree_list[i]):
+                    grf_1[i] = tree_list[i]['GRF1'].get('cost') / float(tree_size)
+                if ('ZSS_0.5' in tree_list[i]):
+                    zss_0_5[i] = tree_list[i]['ZSS_0.5'].get('cost') / float(tree_size)
+            s_grf_1 = sorted(grf_1)
+            s_zss_0_5 = [x for _,x in sorted(zip(grf_1,zss_0_5))]
+            low_grf_1 = [s_grf_1[i] for i in range(0,21)];
+            low_zss_0_5 = [s_zss_0_5[i] for i in range(0,21)];
+            high_grf_1 = [s_grf_1[i] for i in range(181,201)];
+            high_zss_0_5 = [s_zss_0_5[i] for i in range(181,201)];
+            if len(low_grf_1) > 0 && len(low_zss_0_5) > 20:
+                maximum = max(np.amax(low_grf_1), np.amax(low_zss_0_5))
+                plot_name = 'plots/low_grf_corr_ated.png'
+                plt.ylim(0, max(2.5, 0.2 + maximum))
+                plt.plot(low_grf_1, label="lowest gRFs")
+                plt.plot(low_zss_0_5, label="corresponding ATED")
+                plt.ylabel('distance values')
+                plt.xlabel('example count')
+                plt.legend()
+                plt.savefig(plot_name)
+                plt.figure()
+            if len(high_grf_1) > 0 && len(high_zss_0_5) > 20:
+                maximum = max(np.amax(high_grf_1), np.amax(high_zss_0_5))
+                plot_name = 'plots/high_grf_corr_ated.png'
+                plt.ylim(0, max(2.5, 0.2 + maximum))
+                plt.plot(high_grf_1, label="highest gRFs")
+                plt.plot(high_zss_0_5, label="corresponding ATED")
+                plt.ylabel('distance values')
+                plt.xlabel('example count')
+                plt.legend()
+                plt.savefig(plot_name)
+                plt.figure()
+                plt.close()
 
 def create_time_graph():
     k_array = [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
@@ -760,12 +739,10 @@ def compute_results():
         json.dump(result_data, outfile)
 
 if __name__ == "__main__":
-    for tree_size in [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]:
-        number_of_trees = 64
+    for tree_size in [20]:
+        number_of_trees = 200
         compare_trees(tree_size, number_of_trees)
-        create_graph(tree_size, number_of_trees, "zss")
-        create_graph(tree_size, number_of_trees, "zss_difference")
-        create_graph(tree_size, number_of_trees, "zss_differences_adapted")
-    compute_results()
-    create_time_graph()
+        create_graph(tree_size, number_of_trees, "low_grf_high_ted")
+    #compute_results()
+    #create_time_graph()
 
