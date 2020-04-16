@@ -251,8 +251,15 @@ def compare_trees(tree_size, number_of_trees):
                     lp.solve()
                     if LpStatus[lp.status] == "Optimal":
                         end = time.time()
+                        varsdict = {}
+                        for v in prob.variables():
+                            varsdict[v.name] = v.varValue
+                        solution = {'clusterOne': json.dumps(tree_one.get_clusters(1)),
+                                    'clusterTwo': json.dumps(tree_two.get_clusters(1)),
+                                    'vardsDict': json.dumps(varsdict)}
                         tree_list[i]['GRF' + str(k)] = {"cost": value(lp.objective), "time": end - start,
-                        "time_creation": time_creation}
+                        "time_creation": time_creation, "solution": solution}
+                        
             for k in [0.5]:
                 key = "ZSS_" + str(k)
                 if (key not in tree_list[i]):
