@@ -229,7 +229,7 @@ def compare_trees(tree_size, number_of_trees):
         with open(file_name) as tree_file: 
             tree_list = json.load(tree_file)
         size_start = time.time()
-        for i in range(0, len(tree_list)):
+        for i in range(0, min(len(tree_list),number_of_trees)):
             loop_time = time.time()
             j = i + 1
             needed_time = loop_time - size_start
@@ -443,18 +443,22 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
         elif graph_type == 'low_grf_high_ted':
             zss_0_5 = [-1 for _ in range(number_of_trees)]
             grf_1 = [-1 for _ in range(number_of_trees)]
-            for i in range(0, len(tree_list)):
-                key = 'GRF' + str(k)
+            for i in range(0, min(len(tree_list), number_of_trees)):
+               # key = 'GRF' + str(k)
                 if ('GRF1' in tree_list[i]):
-                    grf_1[i] = tree_list[i]['GRF1'].get('cost') / float(tree_size)
+                    if isinstance(tree_list[i]['GRF1'], dict) and 'cost' in tree_list[i]['GRF1']:
+                        print(i, tree_list[i]['GRF1'].keys(), tree_list[i]['GRF1']) 
+                        grf_1[i] = tree_list[i]['GRF1'].get('cost') / float(tree_size)
+                    elif isinstance(tree_list[i]['GRF1'],(int,float)):
+                        grf_1[i] = tree_list[i]['GRF1']
                 if ('ZSS_0.5' in tree_list[i]):
                     zss_0_5[i] = tree_list[i]['ZSS_0.5'].get('cost') / float(tree_size)
             s_grf_1 = sorted(grf_1)
             s_zss_0_5 = [x for _,x in sorted(zip(grf_1,zss_0_5))]
             low_grf_1 = [s_grf_1[i] for i in range(0,21)];
             low_zss_0_5 = [s_zss_0_5[i] for i in range(0,21)];
-            high_grf_1 = [s_grf_1[i] for i in range(181,201)];
-            high_zss_0_5 = [s_zss_0_5[i] for i in range(181,201)];
+            high_grf_1 = [s_grf_1[i] for i in range(119,140)];
+            high_zss_0_5 = [s_zss_0_5[i] for i in range(119,140)];
             if len(low_grf_1) > 0 and len(low_zss_0_5) > 20:
                 maximum = max(np.amax(low_grf_1), np.amax(low_zss_0_5))
                 plot_name = 'plots/low_grf_corr_ated.png'
@@ -466,6 +470,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.legend()
                 plt.savefig(plot_name)
                 plt.figure()
+                plt.close()
             if len(high_grf_1) > 0 and len(high_zss_0_5) > 20:
                 maximum = max(np.amax(high_grf_1), np.amax(high_zss_0_5))
                 plot_name = 'plots/high_grf_corr_ated.png'
@@ -740,7 +745,7 @@ def compute_results():
 
 if __name__ == "__main__":
     for tree_size in [20]:
-        number_of_trees = 200
+        number_of_trees = 140
         compare_trees(tree_size, number_of_trees)
         create_graph(tree_size, number_of_trees, "low_grf_high_ted")
     #compute_results()
