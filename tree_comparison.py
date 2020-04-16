@@ -243,7 +243,7 @@ def compare_trees(tree_size, number_of_trees):
                 tree_list[i]['#GRFRestr'] = len(I)
             for k in [1]:
                 key = 'GRF' + str(k)
-                if (key not in tree_list[i] and tree_size <= 16):
+                if (key not in tree_list[i] ):
                     start = time.time()
                     print( "k is " + str(k))
                     lp = createLPproblem(tree_one, tree_two, k)
@@ -263,15 +263,15 @@ def compare_trees(tree_size, number_of_trees):
                             update_cost=lambda a, b: strdist(ExtendedNode.get_label(a), ExtendedNode.get_label(b)))
                     end = time.time()
                     tree_list[i][key] = {"cost": cost, "time": end - start}
-                key2 = key + "_a"
-                if (key2 not in tree_list[i]):
-                    start = time.time()
-                    print(key2)
-                    cost = zss.distance(
-                            tree_one_adapted, tree_two, tree_one.get_children,insert_cost_delta(k), remove_cost_delta(k),
-                            update_cost=lambda a, b: strdist(ExtendedNode.get_label(a), ExtendedNode.get_label(b)))
-                    end = time.time()
-                    tree_list[i][key2] = {"cost": cost, "time": end - start}
+                #key2 = key + "_a"
+                #if (key2 not in tree_list[i]):
+                #    start = time.time()
+                #    print(key2)
+                #   cost = zss.distance(
+                 #           tree_one_adapted, tree_two, tree_one.get_children,insert_cost_delta(k), remove_cost_delta(k),
+                  #          update_cost=lambda a, b: strdist(ExtendedNode.get_label(a), ExtendedNode.get_label(b)))
+                   # end = time.time()
+                    #tree_list[i][key2] = {"cost": cost, "time": end - start}
 
             with open(file_name, 'w') as outfile:
                 json.dump(tree_list, outfile)
@@ -444,7 +444,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             zss_0_5 = [-1 for _ in range(number_of_trees)]
             grf_1 = [-1 for _ in range(number_of_trees)]
             for i in range(0, len(tree_list)):
-                    key = 'GRF' + str(k)
+                key = 'GRF' + str(k)
                 if ('GRF1' in tree_list[i]):
                     grf_1[i] = tree_list[i]['GRF1'].get('cost') / float(tree_size)
                 if ('ZSS_0.5' in tree_list[i]):
@@ -455,7 +455,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             low_zss_0_5 = [s_zss_0_5[i] for i in range(0,21)];
             high_grf_1 = [s_grf_1[i] for i in range(181,201)];
             high_zss_0_5 = [s_zss_0_5[i] for i in range(181,201)];
-            if len(low_grf_1) > 0 && len(low_zss_0_5) > 20:
+            if len(low_grf_1) > 0 and len(low_zss_0_5) > 20:
                 maximum = max(np.amax(low_grf_1), np.amax(low_zss_0_5))
                 plot_name = 'plots/low_grf_corr_ated.png'
                 plt.ylim(0, max(2.5, 0.2 + maximum))
@@ -466,7 +466,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.legend()
                 plt.savefig(plot_name)
                 plt.figure()
-            if len(high_grf_1) > 0 && len(high_zss_0_5) > 20:
+            if len(high_grf_1) > 0 and len(high_zss_0_5) > 20:
                 maximum = max(np.amax(high_grf_1), np.amax(high_zss_0_5))
                 plot_name = 'plots/high_grf_corr_ated.png'
                 plt.ylim(0, max(2.5, 0.2 + maximum))
