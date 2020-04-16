@@ -252,7 +252,7 @@ def compare_trees(tree_size, number_of_trees):
                     if LpStatus[lp.status] == "Optimal":
                         end = time.time()
                         varsdict = {}
-                        for v in prob.variables():
+                        for v in lp.variables():
                             varsdict[v.name] = v.varValue
                         solution = {'clusterOne': json.dumps(tree_one.get_clusters(1)),
                                     'clusterTwo': json.dumps(tree_two.get_clusters(1)),
@@ -751,8 +751,8 @@ def compute_results():
         json.dump(result_data, outfile)
 
 if __name__ == "__main__":
-    for tree_size in [20]:
-        number_of_trees = 140
+    for tree_size in [8]:
+        number_of_trees = 3
         compare_trees(tree_size, number_of_trees)
         create_graph(tree_size, number_of_trees, "low_grf_high_ted")
     #compute_results()
