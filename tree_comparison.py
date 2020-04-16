@@ -195,7 +195,7 @@ def createLPproblem(tree_one, tree_two, k):
         lp += lpSum([x[str(k[0])][str(k[1])], x[str(k[2])][str(k[3])]]) <= 1, ""
 
     
-    return lp
+    return {"lp": lp, "c1": c1, "c2": c2}
 
 def adapt_tree_one(tree_one, tree_two):
     stack = list()
@@ -246,7 +246,8 @@ def compare_trees(tree_size, number_of_trees):
                 if (key not in tree_list[i] ):
                     start = time.time()
                     print( "k is " + str(k))
-                    lp = createLPproblem(tree_one, tree_two, k)
+                    lpProblem = createLPproblem(tree_one, tree_two, k)
+                    lp = LpProblem.get("lp")
                     time_creation = time.time() - start
                     lp.solve()
                     if LpStatus[lp.status] == "Optimal":
@@ -254,10 +255,25 @@ def compare_trees(tree_size, number_of_trees):
                         varsdict = {}
                         for v in lp.variables():
                             varsdict[v.name] = v.varValue
-                        solution = {'clusterOne': json.dumps(tree_one.get_clusters(1)),
-                                    'clusterTwo': json.dumps(tree_two.get_clusters(1)),
+                        gRF = 0
+                        for k in range(0,len(c1)):
+                            gRF = gRF + 1
+                            for l in range(0,len(c2)):
+                                key = "x_" + str(k) + "_" + str(l)
+                                if (varsdict[key] == 1.0):
+                                    cup = [i for i in c1 if i in c2]
+                                    gRF = gRF - len(cup)/(len(c1) + len(c2) - len(cup))
+                        for k in range(0,len(c2)):
+                            used = 0
+                            for l in range(0,len(c2)):
+                                if (varsdict[key] == 1.0):
+                                    used = 1
+                            if used == 1:
+                                gRF = gRF + 1
+                        solution = {'clusterOne': c1,
+                                    'clusterTwo': c2,
                                     'vardsDict': json.dumps(varsdict)}
-                        tree_list[i]['GRF' + str(k)] = {"cost": value(lp.objective), "time": end - start,
+                        tree_list[i]['GRF' + str(k)] = {"cost": gRF, "time": end - start,
                         "time_creation": time_creation, "solution": solution}
                         
             for k in [0.5]:
