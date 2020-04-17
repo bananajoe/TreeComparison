@@ -148,7 +148,7 @@ def distance_between_clusters(cluster_one, cluster_two, k):
     return 1 - (len_cap / len_cup)**k
 
 def compute_cost_function(cluster_one, cluster_two, k):
-    return {(str(i),str(j)): distance_between_clusters(cluster_one[i], cluster_two[j], k) for i in range(0, len(cluster_one)) for j in range(0, len(cluster_two))}
+    return {(str(i),str(j)): 2 - distance_between_clusters(cluster_one[i], cluster_two[j], k) for i in range(0, len(cluster_one)) for j in range(0, len(cluster_two))}
 
 def compute_invalid_edges(clusters_one, clusters_two):
     I = []
@@ -165,12 +165,14 @@ def compute_invalid_edges(clusters_one, clusters_two):
         if len(cap1) == 0 and len(cap2) == 0:
             continue
         I.append([i,j,k,l])
+   # print(I)
     return I
 
 def createLPproblem(tree_one, tree_two, k):
     clusters_one = tree_one.get_clusters(1)
     clusters_two = tree_two.get_clusters(1)
     c = compute_cost_function(clusters_one, clusters_two, k)
+    #print(c)
     c1 = []
     for i in range(0,len(clusters_one)):
         c1.append(str(i))
@@ -193,9 +195,9 @@ def createLPproblem(tree_one, tree_two, k):
         lp += lpSum([x[i][j] for i in c1]) <= 1, ""
     for k in I:
         lp += lpSum([x[str(k[0])][str(k[1])], x[str(k[2])][str(k[3])]]) <= 1, ""
-
+    #print(clusters_one, clusters_two)
     
-    return {"lp": lp, "c1": c1, "c2": c2}
+    return {"lp": lp, "c1": clusters_one, "c2": clusters_two}
 
 def adapt_tree_one(tree_one, tree_two):
     stack = list()
@@ -247,9 +249,11 @@ def compare_trees(tree_size, number_of_trees):
                     start = time.time()
                     print( "k is " + str(k))
                     lpProblem = createLPproblem(tree_one, tree_two, k)
-                    lp = LpProblem.get("lp")
+                    lp = lpProblem.get("lp")
                     time_creation = time.time() - start
                     lp.solve()
+                    c1 = lpProblem.get("c1")
+                    c2 = lpProblem.get("c2")
                     if LpStatus[lp.status] == "Optimal":
                         end = time.time()
                         varsdict = {}
@@ -257,19 +261,25 @@ def compare_trees(tree_size, number_of_trees):
                             varsdict[v.name] = v.varValue
                         gRF = 0
                         for k in range(0,len(c1)):
+                            #print(gRF, c1, c2)
                             gRF = gRF + 1
                             for l in range(0,len(c2)):
                                 key = "x_" + str(k) + "_" + str(l)
+                               # print(key, varsdict[key])
                                 if (varsdict[key] == 1.0):
-                                    cup = [i for i in c1 if i in c2]
-                                    gRF = gRF - len(cup)/(len(c1) + len(c2) - len(cup))
+                                    cup = [i for i in c1[k] if i in c2[l]]
+                                    #print(c1[k], c2[l], cup)
+                                    gRF = gRF - len(cup)/(len(c1[k]) + len(c2[l]) - len(cup))
+                            #print(gRF)
                         for k in range(0,len(c2)):
                             used = 0
-                            for l in range(0,len(c2)):
+                            for l in range(0,len(c1)):
+                                key = "x_" + str(l) + "_" + str(k)
                                 if (varsdict[key] == 1.0):
                                     used = 1
-                            if used == 1:
+                            if used == 0:
                                 gRF = gRF + 1
+                        #print(gRF)
                         solution = {'clusterOne': c1,
                                     'clusterTwo': c2,
                                     'vardsDict': json.dumps(varsdict)}
@@ -470,7 +480,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                # key = 'GRF' + str(k)
                 if ('GRF1' in tree_list[i]):
                     if isinstance(tree_list[i]['GRF1'], dict) and 'cost' in tree_list[i]['GRF1']:
-                        print(i, tree_list[i]['GRF1'].keys(), tree_list[i]['GRF1']) 
+                        #print(i, tree_list[i]['GRF1'].keys(), tree_list[i]['GRF1']) 
                         grf_1[i] = tree_list[i]['GRF1'].get('cost') / float(tree_size)
                     elif isinstance(tree_list[i]['GRF1'],(int,float)):
                         grf_1[i] = tree_list[i]['GRF1']
@@ -482,9 +492,11 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             low_zss_0_5 = [s_zss_0_5[i] for i in range(0,21)];
             high_grf_1 = [s_grf_1[i] for i in range(119,140)];
             high_zss_0_5 = [s_zss_0_5[i] for i in range(119,140)];
-            if len(low_grf_1) > 0 and len(low_zss_0_5) > 20:
+            print(low_grf_1, low_zss_0_5)
+            if len(low_grf_1) > 0 and len(low_zss_0_5) > 10:
                 maximum = max(np.amax(low_grf_1), np.amax(low_zss_0_5))
                 plot_name = 'plots/low_grf_corr_ated.png'
+            #    plt.figure(1)
                 plt.ylim(0, max(2.5, 0.2 + maximum))
                 plt.plot(low_grf_1, label="lowest gRFs")
                 plt.plot(low_zss_0_5, label="corresponding ATED")
@@ -492,11 +504,12 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.xlabel('example count')
                 plt.legend()
                 plt.savefig(plot_name)
-                plt.figure()
+                #plt.figure()
                 plt.close()
-            if len(high_grf_1) > 0 and len(high_zss_0_5) > 20:
+            if len(high_grf_1) > 0 and len(high_zss_0_5) > 10:
                 maximum = max(np.amax(high_grf_1), np.amax(high_zss_0_5))
                 plot_name = 'plots/high_grf_corr_ated.png'
+             #   plt.figure(2)
                 plt.ylim(0, max(2.5, 0.2 + maximum))
                 plt.plot(high_grf_1, label="highest gRFs")
                 plt.plot(high_zss_0_5, label="corresponding ATED")
@@ -767,8 +780,8 @@ def compute_results():
         json.dump(result_data, outfile)
 
 if __name__ == "__main__":
-    for tree_size in [8]:
-        number_of_trees = 3
+    for tree_size in [20]:
+        number_of_trees = 300
         compare_trees(tree_size, number_of_trees)
         create_graph(tree_size, number_of_trees, "low_grf_high_ted")
     #compute_results()
