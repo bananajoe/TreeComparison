@@ -260,22 +260,22 @@ def compare_trees(tree_size, number_of_trees):
                         for v in lp.variables():
                             varsdict[v.name] = v.varValue
                         gRF = 0
-                        for k in range(0,len(c1)):
+                        for m in range(0,len(c1)):
                             #print(gRF, c1, c2)
                             gRF = gRF + 1
                             for l in range(0,len(c2)):
-                                key = "x_" + str(k) + "_" + str(l)
+                                kex = "x_" + str(m) + "_" + str(l)
                                # print(key, varsdict[key])
-                                if (varsdict[key] == 1.0):
-                                    cup = [i for i in c1[k] if i in c2[l]]
+                                if (varsdict[kex] == 1.0):
+                                    cup = [i for i in c1[m] if i in c2[l]]
                                     #print(c1[k], c2[l], cup)
-                                    gRF = gRF - len(cup)/(len(c1[k]) + len(c2[l]) - len(cup))
+                                    gRF = gRF - len(cup)/(len(c1[m]) + len(c2[l]) - len(cup))
                             #print(gRF)
-                        for k in range(0,len(c2)):
+                        for m in range(0,len(c2)):
                             used = 0
                             for l in range(0,len(c1)):
-                                key = "x_" + str(l) + "_" + str(k)
-                                if (varsdict[key] == 1.0):
+                                kex = "x_" + str(l) + "_" + str(m)
+                                if (varsdict[kex] == 1.0):
                                     used = 1
                             if used == 0:
                                 gRF = gRF + 1
