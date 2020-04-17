@@ -244,6 +244,9 @@ def compare_trees(tree_size, number_of_trees):
                 I = compute_invalid_edges(tree_one.get_clusters(1), tree_two.get_clusters(1))
                 tree_list[i]['#GRFRestr'] = len(I)
             for k in [1]:
+                if ("GRF17" in tree_list[i]):
+                    tree_list[i]['GRF1'] = tree_list[i]['GRF17']
+                    del tree_list[i]["GRF17"]
                 key = 'GRF' + str(k)
                 if (key not in tree_list[i] ):
                     start = time.time()
