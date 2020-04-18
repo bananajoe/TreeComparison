@@ -492,12 +492,15 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             low_zss_0_5 = [s_zss_0_5[i] for i in range(0,21)];
             high_grf_1 = [s_grf_1[i] for i in range(279,300)];
             high_zss_0_5 = [s_zss_0_5[i] for i in range(279,300)];
-            print(low_grf_1, low_zss_0_5)
+            
             if len(low_grf_1) > 0 and len(low_zss_0_5) > 10:
                 maximum = max(np.amax(low_grf_1), np.amax(low_zss_0_5))
                 plot_name = 'plots/low_grf_corr_ated.png'
-            #    plt.figure(1)
-                plt.ylim(0, max(2.5, 0.2 + maximum))
+                plt.figure(1)
+                plt.grid(True)
+                plt.ylim(0, max(2, 0.2 + maximum)) 
+                plt.yticks([0, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
+                plt.xlim(0, 21) 
                 plt.plot(low_grf_1, label="lowest gRFs")
                 plt.plot(low_zss_0_5, label="corresponding ATED")
                 plt.plot((0,21),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
@@ -511,10 +514,32 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             if len(high_grf_1) > 0 and len(high_zss_0_5) > 10:
                 maximum = max(np.amax(high_grf_1), np.amax(high_zss_0_5))
                 plot_name = 'plots/high_grf_corr_ated.png'
-             #   plt.figure(2)
-                plt.ylim(0, max(2.5, 0.2 + maximum))
+                plt.figure(2)
+                plt.grid(True)
+                plt.ylim(0, max(2, 0.2 + maximum)) 
+                plt.yticks([0, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
+                plt.xlim(0, 21) 
                 plt.plot(high_grf_1, label="highest gRFs")
                 plt.plot(high_zss_0_5, label="corresponding ATED")
+                plt.plot((0,21),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
+                plt.plot((0,21),(max(zss_0_5),max(zss_0_5)),'--', label="highes ATED 0,5")
+                plt.ylabel('distance values')
+                plt.xlabel('example count')
+                plt.legend()
+                plt.savefig(plot_name)
+                plt.figure()
+                plt.close()
+            if len(s_grf_1) > 0 and len(s_zss_0_5) > 10:
+                maximum = max(np.amax(s_zss_0_5), np.amax(s_zss_0_5))
+                plot_name = 'plots/high_grf_corr_ated.png'
+                plt.figure(3,(24,8))
+                plt.grid(True)
+                plt.ylim(0, max(2, 0.2 + maximum)) 
+                plt.yticks([0, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
+                plt.xlim(0, 300) 
+                plt.xticks([0,20,75,150,225,280,300])
+                plt.plot(s_grf_1, label="all gRFs ascending")
+                plt.plot(s_zss_0_5, label="corresponding ATED")
                 plt.plot((0,21),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
                 plt.plot((0,21),(max(zss_0_5),max(zss_0_5)),'--', label="highes ATED 0,5")
                 plt.ylabel('distance values')
