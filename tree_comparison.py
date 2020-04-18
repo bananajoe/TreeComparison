@@ -550,6 +550,28 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.savefig(plot_name)
                 plt.figure()
                 plt.close()
+            
+            rs_zss_0_5 = sorted(zss_0_5)
+            rs_grf_1 = [x for _,x in sorted(zip(zss_0_5,grf_1))]
+            if len(rs_zss_0_5) > 0 and len(rs_grf_1) > 10:
+                maximum = max(np.amax(rs_zss_0_5), np.amax(rs_zss_0_5))
+                plot_name = 'plots/all_examples_ated_corr_grf.png'
+                plt.figure(3,(24,8))
+                plt.grid(True)
+                plt.ylim(0, max(2, 0.2 + maximum)) 
+                plt.yticks([0, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
+                plt.xlim(0, 300) 
+                plt.xticks([0,30,75,150,225,270,300])
+                plt.plot(rs_grf_1, label="corresponding gRFs")
+                plt.plot(rs_zss_0_5, label="all ATED ascending")
+                plt.plot((0,300),(min(rs_grf_1),min(rs_grf_1)),'--', label="lowest gRF")
+                plt.plot((0,300),(max(rs_grf_1),max(rs_grf_1)),'--', label="highes gRF")
+                plt.ylabel('distance values')
+                plt.xlabel('example count')
+                plt.legend()
+                plt.savefig(plot_name)
+                plt.figure()
+                plt.close()
 
 def create_time_graph():
     k_array = [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
