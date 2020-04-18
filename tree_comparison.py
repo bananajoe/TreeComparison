@@ -488,10 +488,10 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                     zss_0_5[i] = tree_list[i]['ZSS_0.5'].get('cost') / float(tree_size)
             s_grf_1 = sorted(grf_1)
             s_zss_0_5 = [x for _,x in sorted(zip(grf_1,zss_0_5))]
-            low_grf_1 = [s_grf_1[i] for i in range(0,21)];
-            low_zss_0_5 = [s_zss_0_5[i] for i in range(0,21)];
-            high_grf_1 = [s_grf_1[i] for i in range(279,300)];
-            high_zss_0_5 = [s_zss_0_5[i] for i in range(279,300)];
+            low_grf_1 = [s_grf_1[i] for i in range(0,31)];
+            low_zss_0_5 = [s_zss_0_5[i] for i in range(0,31)];
+            high_grf_1 = [s_grf_1[i] for i in range(269,300)];
+            high_zss_0_5 = [s_zss_0_5[i] for i in range(269,300)];
             
             if len(low_grf_1) > 0 and len(low_zss_0_5) > 10:
                 maximum = max(np.amax(low_grf_1), np.amax(low_zss_0_5))
@@ -500,12 +500,12 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.grid(True)
                 plt.ylim(0, max(2, 0.2 + maximum)) 
                 plt.yticks([0, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
-                plt.xlim(0, 21) 
-                plt.xticks([0,5,10,15,20])
+                plt.xlim(0, 30) 
+                plt.xticks([0,5,10,15,20,25,30])
                 plt.plot(low_grf_1, label="lowest gRFs")
                 plt.plot(low_zss_0_5, label="corresponding ATED")
-                plt.plot((0,21),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
-                plt.plot((0,21),(max(zss_0_5),max(zss_0_5)),'--', label="highest ATED 0,5")
+                plt.plot((0,30),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
+                plt.plot((0,30),(max(zss_0_5),max(zss_0_5)),'--', label="highest ATED 0,5")
                 plt.ylabel('distance values')
                 plt.xlabel('example count')
                 plt.legend()
@@ -519,12 +519,12 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.grid(True)
                 plt.ylim(0, max(2, 0.2 + maximum)) 
                 plt.yticks([0, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
-                plt.xlim(0, 21)
-                plt.xticks([0,5,10,15,20])
+                plt.xlim(0, 30)
+                plt.xticks([0,5,10,15,20,25,30])
                 plt.plot(high_grf_1, label="highest gRFs")
                 plt.plot(high_zss_0_5, label="corresponding ATED")
-                plt.plot((0,21),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
-                plt.plot((0,21),(max(zss_0_5),max(zss_0_5)),'--', label="highes ATED 0,5")
+                plt.plot((0,30),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
+                plt.plot((0,30),(max(zss_0_5),max(zss_0_5)),'--', label="highes ATED 0,5")
                 plt.ylabel('distance values')
                 plt.xlabel('example count')
                 plt.legend()
@@ -539,7 +539,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.ylim(0, max(2, 0.2 + maximum)) 
                 plt.yticks([0, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
                 plt.xlim(0, 300) 
-                plt.xticks([0,20,75,150,225,280,300])
+                plt.xticks([0,30,75,150,225,270,300])
                 plt.plot(s_grf_1, label="all gRFs ascending")
                 plt.plot(s_zss_0_5, label="corresponding ATED")
                 plt.plot((0,300),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
