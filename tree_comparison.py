@@ -244,9 +244,6 @@ def compare_trees(tree_size, number_of_trees):
                 I = compute_invalid_edges(tree_one.get_clusters(1), tree_two.get_clusters(1))
                 tree_list[i]['#GRFRestr'] = len(I)
             for k in [1]:
-                if ("GRF17" in tree_list[i]):
-                    tree_list[i]['GRF1'] = tree_list[i]['GRF17']
-                    del tree_list[i]["GRF17"]
                 key = 'GRF' + str(k)
                 if (key not in tree_list[i] ):
                     start = time.time()
@@ -287,7 +284,7 @@ def compare_trees(tree_size, number_of_trees):
                                     'clusterTwo': c2,
                                     'vardsDict': json.dumps(varsdict)}
                         tree_list[i]['GRF' + str(k)] = {"cost": gRF, "time": end - start,
-                        "time_creation": time_creation, "solution": solution}
+                        "time_creation": time_creation}
                         
             for k in [0.5]:
                 key = "ZSS_" + str(k)
@@ -493,8 +490,8 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             s_zss_0_5 = [x for _,x in sorted(zip(grf_1,zss_0_5))]
             low_grf_1 = [s_grf_1[i] for i in range(0,21)];
             low_zss_0_5 = [s_zss_0_5[i] for i in range(0,21)];
-            high_grf_1 = [s_grf_1[i] for i in range(119,140)];
-            high_zss_0_5 = [s_zss_0_5[i] for i in range(119,140)];
+            high_grf_1 = [s_grf_1[i] for i in range(279,300)];
+            high_zss_0_5 = [s_zss_0_5[i] for i in range(279,300)];
             print(low_grf_1, low_zss_0_5)
             if len(low_grf_1) > 0 and len(low_zss_0_5) > 10:
                 maximum = max(np.amax(low_grf_1), np.amax(low_zss_0_5))
@@ -503,6 +500,8 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.ylim(0, max(2.5, 0.2 + maximum))
                 plt.plot(low_grf_1, label="lowest gRFs")
                 plt.plot(low_zss_0_5, label="corresponding ATED")
+                plt.plot((0,21),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
+                plt.plot((0,21),(max(zss_0_5),max(zss_0_5)),'--', label="highest ATED 0,5")
                 plt.ylabel('distance values')
                 plt.xlabel('example count')
                 plt.legend()
@@ -516,6 +515,8 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
                 plt.ylim(0, max(2.5, 0.2 + maximum))
                 plt.plot(high_grf_1, label="highest gRFs")
                 plt.plot(high_zss_0_5, label="corresponding ATED")
+                plt.plot((0,21),(min(zss_0_5),min(zss_0_5)),'--', label="lowest ATED 0,5")
+                plt.plot((0,21),(max(zss_0_5),max(zss_0_5)),'--', label="highes ATED 0,5")
                 plt.ylabel('distance values')
                 plt.xlabel('example count')
                 plt.legend()
@@ -785,7 +786,7 @@ def compute_results():
 if __name__ == "__main__":
     for tree_size in [20]:
         number_of_trees = 300
-        compare_trees(tree_size, number_of_trees)
+        #compare_trees(tree_size, number_of_trees)
         create_graph(tree_size, number_of_trees, "low_grf_high_ted")
     #compute_results()
     #create_time_graph()
