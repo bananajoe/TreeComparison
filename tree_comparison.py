@@ -556,7 +556,7 @@ def create_graph(tree_size, number_of_trees, graph_type="zss_to_grf"):
             if len(rs_zss_0_5) > 0 and len(rs_grf_1) > 10:
                 maximum = max(np.amax(rs_zss_0_5), np.amax(rs_zss_0_5))
                 plot_name = 'plots/all_examples_ated_corr_grf.png'
-                plt.figure(3,(24,8))
+                plt.figure(4,(24,8))
                 plt.grid(True)
                 plt.ylim(0, max(2, 0.2 + maximum)) 
                 plt.yticks([0, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2])
