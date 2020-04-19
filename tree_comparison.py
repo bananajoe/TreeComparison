@@ -243,7 +243,7 @@ def compare_trees(tree_size, number_of_trees):
             if ('#GRFRestr' not in tree_list[i] and tree_size <= 32):
                 I = compute_invalid_edges(tree_one.get_clusters(1), tree_two.get_clusters(1))
                 tree_list[i]['#GRFRestr'] = len(I)
-            for k in [1]:
+            for k in [1,4,16,64]:
                 key = 'GRF' + str(k)
                 if (key not in tree_list[i] ):
                     start = time.time()
@@ -833,9 +833,9 @@ def compute_results():
         json.dump(result_data, outfile)
 
 if __name__ == "__main__":
-    for tree_size in [20]:
-        number_of_trees = 300
-        #compare_trees(tree_size, number_of_trees)
+    for tree_size in [4,5,6,7,8,9,10,11,12,16]:
+        number_of_trees = 100
+        compare_trees(tree_size, number_of_trees)
         create_graph(tree_size, number_of_trees, "low_grf_high_ted")
     #compute_results()
     #create_time_graph()
