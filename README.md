@@ -66,7 +66,7 @@ Afterwards a couple of different plots are generated that compare TEDs with each
 Those plots are saved in "plots/<plot_type>_<tree_size>.png"
 
 ## Comparing your customized instance
-1. Create instances of two trees according to the structured described in the Master Thesis:
+#### 1. Create instances of two trees according to the structured described in the Master Thesis:
 ```
   .
  / \
@@ -77,10 +77,10 @@ Those plots are saved in "plots/<plot_type>_<tree_size>.png"
 ```
 Both instances need to be of the same size and on the same set of taxa ({1,...,tree_size})
 
-2. Create example file "example_tree_size_<tree_size>.json" with the following content:<br/>
+#### 2. Create example file "example_tree_size_<tree_size>.json" with the following content:<br/>
 ```
 [{"one":[...], "two":[...]}]
 ```
 
-3. Execute the script with the correct parameters
+#### 3. Execute the script with the correct parameters
 
