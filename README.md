@@ -25,7 +25,6 @@ https://stackoverflow.com/questions/6587507/how-to-install-pip-with-python-3
 ## Executing the comparison tool
 Before executing the command, take a look at the helper:
 
-
 ```bash
 > python3 main.py -h
 > main.py -t <tree_size> -n <number_of_trees>
@@ -35,7 +34,11 @@ tree_size: refers to the number of leaves each tree should have<br/>
 number_of_trees: refers to the number of instances that will be created and compared
 ```
 
-Executing "python3 main-py -t 10 -n 50" will create instances of pairs of trees with 10 leaves each, until 50 instances exist.
+Executing 
+```bash
+> python3 main-py -t 10 -n 50
+```
+will create instances of pairs of trees with 10 leaves each, until 50 instances exist.
 If 20 instances have already existed, it will only create 30 new instances.  
 After creating them, the trees within each instance will be compared (w.r.t. the different distance measures) and the results stored in "examples/example_trees_size_<tree_size>.json"
 
