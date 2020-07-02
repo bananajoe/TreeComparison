@@ -4,6 +4,8 @@
 #  average time taken and average distance between all examples,
 
 import json
+import os.path
+from six.moves import range
 
 def compute_results():
     k_array = [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
@@ -135,15 +137,15 @@ def compute_results():
                 ar_grf64["max"].append(grf64.get('max'))
                 ar_grf64["min"].append(grf64.get('min'))
 
-    differences = {
-        'CTED': [],
-        'CTED_5': [],
-        'STED': [],
-        }
-    for i in range(0, len(k_array)):
-        differences['CTED'].append(ar_cted['cost'][i] - ar_cted_a['cost'][i])
-        differences['CTED_5'].append(ar_ated['cost'][i] - ar_ated_a['cost'][i])
-        differences['STED'].append(ar_sted['cost'][i] - ar_sted_a['cost'][i])
+    #differences = {
+    #    'CTED': [],
+    #    'CTED_5': [],
+    #    'STED': [],
+    #    }
+    #for i in range(0, len(k_array)):
+    #    differences['CTED'].append(ar_cted['cost'][i] - ar_cted_a['cost'][i])
+    #    differences['CTED_5'].append(ar_ated['cost'][i] - ar_ated_a['cost'][i])
+    #    differences['STED'].append(ar_sted['cost'][i] - ar_sted_a['cost'][i])
 
 
     result_data = {
@@ -154,17 +156,8 @@ def compute_results():
         'CTED_5': ar_ated,
         'CTED_5_a': ar_ated_a,
         'STED': ar_sted,
-        'STED_a': ar_sted_a,
-        'Differences adapted': differences
+        'STED_a': ar_sted_a
+    #    'Differences adapted': differences
         }
     with open('results/result_data.json', 'w') as outfile:
         json.dump(result_data, outfile)
-
-if __name__ == "__main__":
-    for tree_size in [4,5,6,7,8,9,10,11,12,16]:
-        number_of_trees = 100
-        #compare_trees(tree_size, number_of_trees)
-        create_graph(tree_size, number_of_trees, "low_grf_high_ted")
-    #compute_results()
-    #create_time_graph()
-

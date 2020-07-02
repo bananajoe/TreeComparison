@@ -4,7 +4,8 @@ from extended_node import ExtendedNode
 import catalan_numbers
 import random
 import json
-import os
+import os.path
+from copy import deepcopy
 
 def random_full_binary_tree(n):
     if n == 1:

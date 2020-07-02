@@ -1,11 +1,13 @@
 #Additional functions creating graphs with the previously computed data
 
-import os
+from matplotlib import pyplot as plt
+import os.path
 import json
+import numpy as np
 
 def create_ted_to_grf1_graph(tree_size, number_of_trees):
     file_name = 'examples/example_trees_size_' + tree_size.__str__() + '.json'
-    plot_name = 'plots/' + graph_type + '_trees_size_' + tree_size.__str__() + ".png"
+    plot_name = 'plots/ted_to_grf1_trees_size_' + tree_size.__str__() + ".png"
     if os.path.exists(file_name):
         data = [[[] for _ in range(6)] for _ in range(number_of_trees)]
         with open(file_name) as tree_file:
@@ -45,22 +47,24 @@ def create_ted_to_grf1_graph(tree_size, number_of_trees):
             plt.ylabel('proportion of distances relative to GRF 1')
             plt.legend()
             plt.savefig(plot_name)
+            print('Created graph ' + plot_name)
             plt.figure()
             plt.plot(sorted_sted_to_grf1, label="STED to GRF1")
             plt.plot(sorted_sted_adapted_to_grf1, label="Adapted STED to GRF1")
             plt.ylabel('proportion of distances relative to GRF 1')
             plt.legend()
             plt.savefig('plots/sted_sorted_' + tree_size.__str__() + '.png')
+            print('Created graph plots/sted_sorted_' + tree_size.__str__() + '.png')
             plt.close()
 
 def create_teds_graph(tree_size, number_of_trees):
     file_name = 'examples/example_trees_size_' + tree_size.__str__() + '.json'
-    plot_name = 'plots/' + graph_type + '_trees_size_' + tree_size.__str__() + ".png"
+    plot_name = 'plots/teds_trees_size_' + tree_size.__str__() + ".png"
     if os.path.exists(file_name):
         data = [[[] for _ in range(6)] for _ in range(number_of_trees)]
         with open(file_name) as tree_file:
             tree_list = json.load(tree_file)
-        ted = [-1 for _ in range(number_of_trees)]
+        cted = [-1 for _ in range(number_of_trees)]
         cted_a = [-1 for _ in range(number_of_trees)]
         ated = [-1 for _ in range(number_of_trees)]
         ated_a = [-1 for _ in range(number_of_trees)]
@@ -97,10 +101,11 @@ def create_teds_graph(tree_size, number_of_trees):
         plt.legend()
         plt.savefig(plot_name)
         plt.close()
+        print('Created graph ' + plot_name)
 
 def create_teds_difference_graph(tree_size, number_of_trees):
     file_name = 'examples/example_trees_size_' + tree_size.__str__() + '.json'
-    plot_name = 'plots/' + graph_type + '_trees_size_' + tree_size.__str__() + ".png"
+    plot_name = 'plots/teds_difference_trees_size_' + tree_size.__str__() + ".png"
     if os.path.exists(file_name):
         data = [[[] for _ in range(6)] for _ in range(number_of_trees)]
         with open(file_name) as tree_file:
@@ -128,10 +133,10 @@ def create_teds_difference_graph(tree_size, number_of_trees):
         plt.legend()
         plt.savefig(plot_name)
         plt.close()
+        print('Created graph ' + plot_name)
 
 def create_teds_difference_adapted_graph(tree_size, number_of_trees):
     file_name = 'examples/example_trees_size_' + tree_size.__str__() + '.json'
-    plot_name = 'plots/' + graph_type + '_trees_size_' + tree_size.__str__() + ".png"
     if os.path.exists(file_name):
         data = [[[] for _ in range(6)] for _ in range(number_of_trees)]
         with open(file_name) as tree_file:
@@ -161,34 +166,37 @@ def create_teds_difference_adapted_graph(tree_size, number_of_trees):
         maximum = max(np.amax(cted), np.amax(cted_a))
         minimum = min(np.amin(cted), np.amin(cted_a))
         plt.ylim(minimum -0.2, maximum + 0.2)
-        plt.plot(cted, label="CTED")
-        plt.plot(cted_a, label="CTED adapted")
+        plt.plot(s_cted, label="CTED")
+        plt.plot(s_cted_a, label="CTED adapted")
         plt.ylabel('different distance measures')
         plt.legend()
         plt.savefig('plots/cted_sorted_' + tree_size.__str__() + '.png')
+        print('Created graph plots/cted_sorted_' + tree_size.__str__() + '.png')
         plt.close()
         maximum = max(np.amax(ated), np.amax(ated_a))
         minimum = min(np.amin(ated), np.amin(ated_a))
         plt.ylim(minimum -0.2, maximum + 0.2)
-        plt.plot(ated, label="ATED")
-        plt.plot(ated_a, label="ATED adapted")
+        plt.plot(s_ated, label="ATED")
+        plt.plot(s_ated_a, label="ATED adapted")
         plt.ylabel('different distance measures')
         plt.legend()
         plt.savefig('plots/ated_sorted_' + tree_size.__str__() + '.png')
+        print('Created graph plots/ated_sorted_' + tree_size.__str__() + '.png')
         plt.close()
         maximum = max(np.amax(sted), np.amax(sted_a))
         minimum = min(np.amin(sted), np.amin(sted_a))
         plt.ylim(minimum -0.2, maximum + 0.2)
-        plt.plot(sted, label="STED")
-        plt.plot(sted_a, label="STED adapted")
+        plt.plot(s_sted, label="STED")
+        plt.plot(s_sted_a, label="STED adapted")
         plt.ylabel('different distance measures')
         plt.legend()
         plt.savefig('plots/sted_sorted_' + tree_size.__str__() + '.png')
+        print('Created graph plots/sted_sorted_' + tree_size.__str__() + '.png')
         plt.close()
 
 def create_low_grf_high_ated_graph(tree_size, number_of_trees):
     file_name = 'examples/example_trees_size_' + tree_size.__str__() + '.json'
-    plot_name = 'plots/' + graph_type + '_trees_size_' + tree_size.__str__() + ".png"
+    plot_name = 'plots/low_grf_high_ated_trees_size_' + tree_size.__str__() + ".png"
     if os.path.exists(file_name):
         data = [[[] for _ in range(6)] for _ in range(number_of_trees)]
         with open(file_name) as tree_file:
@@ -229,6 +237,7 @@ def create_low_grf_high_ated_graph(tree_size, number_of_trees):
             plt.xlabel('example count')
             plt.legend()
             plt.savefig(plot_name)
+            print('Created graph ' + plot_name)
             #plt.figure()
             plt.close()
         if len(high_grf_1) > 0 and len(high_ated) > 10:
@@ -248,6 +257,7 @@ def create_low_grf_high_ated_graph(tree_size, number_of_trees):
             plt.xlabel('example count')
             plt.legend()
             plt.savefig(plot_name)
+            print('Created graph ' + plot_name)
             plt.figure()
             plt.close()
         if len(s_grf_1) > 0 and len(s_ated) > 10:
@@ -267,6 +277,7 @@ def create_low_grf_high_ated_graph(tree_size, number_of_trees):
             plt.xlabel('example count')
             plt.legend()
             plt.savefig(plot_name)
+            print('Created graph ' + plot_name)
             plt.figure()
             plt.close()
         
@@ -291,9 +302,18 @@ def create_low_grf_high_ated_graph(tree_size, number_of_trees):
             plt.savefig(plot_name)
             plt.figure()
             plt.close()
+            print('Created graph ' + plot_name)
 
 def create_time_graph():
     k_array = [4,5,6,7,8,9,10,11,12,16,20,24,32,40,48,64,128,192,256]
+    k_cted = k_array.copy()
+    k_cted_a = k_array.copy()
+    k_ated = k_array.copy()
+    k_ated_a = k_array.copy()
+    k_sted = k_array.copy()
+    k_sted_a = k_array.copy()
+    k_grf1 = k_array.copy()
+    k_grf64 = k_array.copy()
     ar_cted = []
     ar_cted_a = []
     ar_ated = []
@@ -302,12 +322,14 @@ def create_time_graph():
     ar_sted_a = []
     ar_grf1 = []
     ar_grf64 = []
+    existing_files = 0
     for k in k_array:
         cted = cted_a = ated = ated_a = sted = sted_a = grf1 = grf64 = {'time': 0, 'count': 0}
         file_name = 'examples/example_trees_size_' + k.__str__() + '.json'
         if os.path.exists(file_name):
             with open(file_name) as tree_file:
                 tree_list = json.load(tree_file)
+            existing_files += 1
             for tree in tree_list:
                 if 'GRF1' in tree and tree['GRF1'].get('time'):
                     grf1 = {'time': grf1.get('time') + tree['GRF1'].get('time'), 'count': grf1.get('count') + 1}
@@ -334,65 +356,84 @@ def create_time_graph():
                         , 'count': sted_a.get('count') + 1}
 
             if cted.get('count'):
-                 ar_cted.append(cted.get('time') / cted.get('count'))
+                ar_cted.append(cted.get('time') / cted.get('count'))
+            else:
+                k_cted.remove(k)
             if cted_a.get('count'):
-                 ar_cted_a.append(cted_a.get('time') / cted_a.get('count'))
+                ar_cted_a.append(cted_a.get('time') / cted_a.get('count'))
+            else:
+                k_cted_a.remove(k)
             if ated.get('count'):
-                 ar_ated.append(cted.get('time') / ated.get('count'))
+                ar_ated.append(cted.get('time') / ated.get('count'))
+            else:
+                k_ated.remove(k)
             if ated_a.get('count'):
-                 ar_ated_a.append(ated_a.get('time') / ated_a.get('count'))
+                ar_ated_a.append(ated_a.get('time') / ated_a.get('count'))
+            else:
+                k_ated_a.remove(k)
             if sted.get('count'):
                 ar_sted.append(sted.get('time') / sted.get('count'))
+            else:
+                k_sted.remove(k)
             if sted_a.get('count'):
                 ar_sted_a.append(sted_a.get('time') / sted_a.get('count'))
+            else:
+                k_sted_a.remove(k)
             if grf1.get('count') > 5:
                 ar_grf1.append(grf1.get('time') / grf1.get('count'))
+            else:
+                k_grf1.remove(k)
             if grf64.get('count') > 5:
                 ar_grf64.append(grf64.get('time') / grf64.get('count'))
-    maximum = max(np.amax(ar_grf64), np.amax(ar_grf1), np.amax(ar_sted_a), np.amax(ar_sted))
+            else:
+                k_grf64.remove(k)
+    if (existing_files > 10):
+        maximum = max(np.amax(ar_grf64), np.amax(ar_grf1), np.amax(ar_sted_a), np.amax(ar_sted))
 
-    # time plot all
-    plt.figure()
-    plt.ylim(0, 1000)
-    plt.plot(k_array, ar_cted, label="CTED")
-    plt.plot(k_array, ar_cted_a, label="CTED adapted")
-    plt.plot(k_array, ar_ated, label="ATED")
-    plt.plot(k_array, ar_ated_a, label="ATED adapted")
-    plt.plot(k_array, ar_sted, label="STED")
-    plt.plot(k_array, ar_sted_a, label="STED adapted")
-    plt.plot(k_array[0:len(ar_grf1)], ar_grf1, label="gRF 1")
-    plt.plot(k_array[0:len(ar_grf64)], ar_grf64, label="gRF 64")
-    plt.ylabel('time taken for the different approaches')
-    plt.legend()
-    plt.savefig('plots/time_plot_all.png')
-    plt.figure()
-    plt.close()
+        # time plot all
+        plt.figure()
+        plt.ylim(0, 1000)
+        plt.plot(k_cted, ar_cted, label="CTED")
+        plt.plot(k_cted_a, ar_cted_a, label="CTED adapted")
+        plt.plot(k_ated, ar_ated, label="ATED")
+        plt.plot(k_ated_a, ar_ated_a, label="ATED adapted")
+        plt.plot(k_sted, ar_sted, label="STED")
+        plt.plot(k_sted_a, ar_sted_a, label="STED adapted")
+        plt.plot(k_grf1, ar_grf1, label="gRF 1")
+        plt.plot(k_grf64, ar_grf64, label="gRF 64")
+        plt.ylabel('time taken for the different approaches')
+        plt.legend()
+        plt.savefig('plots/time_plot_all.png')
+        plt.figure()
+        plt.close()
 
-    # time plot ted
-    plt.figure()
-    plt.ylim(0, 1000)
-    plt.plot(k_array, ar_cted, label="CTED")
-    plt.plot(k_array, ar_cted_a, label="CTED adapted")
-    plt.plot(k_array, ar_ated, label="ATED")
-    plt.plot(k_array, ar_ated_a, label="ATED adapted")
-    plt.plot(k_array, ar_sted, label="STED")
-    plt.plot(k_array, ar_sted_a, label="STED adapted")
-    plt.ylabel('time taken for the different approaches')
-    plt.legend()
-    plt.savefig('plots/time_plot_ted.png')
-    plt.close()
+        # time plot ted
+        plt.figure()
+        plt.ylim(0, 1000)
+        plt.plot(k_cted, ar_cted, label="CTED")
+        plt.plot(k_cted_a, ar_cted_a, label="CTED adapted")
+        plt.plot(k_ated, ar_ated, label="ATED")
+        plt.plot(k_ated_a, ar_ated_a, label="ATED adapted")
+        plt.plot(k_sted, ar_sted, label="STED")
+        plt.plot(k_sted_a, ar_sted_a, label="STED adapted")
+        plt.ylabel('time taken for the different approaches')
+        plt.legend()
+        plt.savefig('plots/time_plot_ted.png')
+        plt.close()
 
 
-    # time plot grf / ted
-    plt.figure()
-    plt.ylim(0, 1000)
-    plt.plot(k_array, ar_sted, label="Tree Edit Distance")
-    plt.plot(k_array[0:len(ar_grf1)], ar_grf1, label="generalized Robinson Foulds")
-    plt.ylabel('average time taken for the different approaches (in s)')
-    plt.xlabel('number of leaves on each example tree')
-    plt.legend()
-    plt.savefig('plots/time_plot_all.png')
-    plt.figure()
-    plt.close()
+        # time plot grf / ted
+        plt.figure()
+        plt.ylim(0, 1000)
+        plt.plot(k_sted, ar_sted, label="Tree Edit Distance")
+        plt.plot(k_grf1, ar_grf1, label="generalized Robinson Foulds")
+        plt.ylabel('average time taken for the different approaches (in s)')
+        plt.xlabel('number of leaves on each example tree')
+        plt.legend()
+        plt.savefig('plots/time_plot_all.png')
+        plt.figure()
+        plt.close()
+    else:
+        print('There are not enough differently sized instances to create a time graph!')
 
 
