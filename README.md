@@ -3,7 +3,7 @@ Python Code for comparing trees
 This code is the source of all results in the Master Thesis:
 "Comparing Trees" by Clemens Andritsch
 
-##Setup and system requirements
+## Setup and system requirements
 This code runs in Python 3
 
 The following packages are necessary to execute the script:
@@ -20,7 +20,7 @@ https://docs.python.org/3/installing/index.html
 or on Stackoverflow:
 https://stackoverflow.com/questions/6587507/how-to-install-pip-with-python-3
 
-##Executing the comparison tool
+## Executing the comparison tool
 Before executing the command, take a look at the helper:
 
 python3 main.py -h
@@ -53,7 +53,7 @@ Example result for an instance:
 Afterwards a couple of different plots are generated that compare TEDs with each other as well as the gRF.
 Those plots are saved in "plots/<plot_type>_<tree_size>.png"
 
-##Comparing your customized instance
+## Comparing your customized instance
 1. Create instances of two trees according to the structured described in the Master Thesis:
   .
  / \
