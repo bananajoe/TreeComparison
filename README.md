@@ -30,16 +30,17 @@ Before executing the command, take a look at the helper:
 > python3 main.py -h
 > main.py -t <tree_size> -n <number_of_trees>
 ```
-
+```
 tree_size: refers to the number of leaves each tree should have<br/>
 number_of_trees: refers to the number of instances that will be created and compared
+```
 
 Executing "python3 main-py -t 10 -n 50" will create instances of pairs of trees with 10 leaves each, until 50 instances exist.
 If 20 instances have already existed, it will only create 30 new instances.  
 After creating them, the trees within each instance will be compared (w.r.t. the different distance measures) and the results stored in "examples/example_trees_size_<tree_size>.json"
 
 Example result for an instance:
-```json
+```
 {
   "one": [...], //The first tree 
   "two": [...], //The second tree
@@ -74,7 +75,9 @@ Those plots are saved in "plots/<plot_type>_<tree_size>.png"
 Both instances need to be of the same size and on the same set of taxa ({1,...,tree_size})
 
 2. Create example file "example_tree_size_<tree_size>.json" with the following content:<br/>
-"[{"one":[...], "two":[...]}]"
+```
+[{"one":[...], "two":[...]}]
+```
 
 3. Execute the script with the correct parameters
 
